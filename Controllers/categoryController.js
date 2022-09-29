@@ -10,10 +10,17 @@ export async function createCategory(req, res) {
   console.log(category);
 
   try {
-    const result = db.query(`INSERT INTO categories(name) VALUES ($1)`, [
+    const isRepeated = db.query(`SELECT * FROM categories WHERE name = $1`, [
       category.name,
     ]);
-    res.sendStatus(201);
+    if (isRepeated.rows === 0) {
+      const result = db.query(`INSERT INTO categories(name) VALUES ($1)`, [
+        category.name,
+      ]);
+      res.sendStatus(201);
+    } else {
+      res.sendStatus(409);
+    }
   } catch (error) {
     console.log(error);
     res.sendStatus(500);

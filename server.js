@@ -10,6 +10,6 @@ app.use(express.json());
 app.use(cors());
 app.use(router);
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5000;
 
-app.listen(port);
+app.listen(5000);
