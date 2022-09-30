@@ -10,19 +10,16 @@ export async function createCategory(req, res) {
   console.log(category);
 
   try {
-    const isRepeated = db.query(`SELECT * FROM categories WHERE name = $1`, [
+    const result = await db.query(`SELECT id FROM categories WHERE name = $1`, [
       category.name,
     ]);
-    if (isRepeated.rows === 0) {
-      const result = db.query(`INSERT INTO categories(name) VALUES ($1)`, [
-        category.name,
-      ]);
-      res.sendStatus(201);
-    } else {
-      res.sendStatus(409);
+    if (result.rowCount > 0) {
+      return res.sendStatus(409);
     }
-  } catch (error) {
-    console.log(error);
+    await db.query(`INSERT INTO categories(name) VALUES ($1)`, [category.name]);
+    res.sendStatus(201);
+  } catch (e) {
+    console.log(e);
     res.sendStatus(500);
   }
 }
